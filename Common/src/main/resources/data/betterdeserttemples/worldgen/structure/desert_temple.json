@@ -24,8 +24,11 @@
         {
           "type": "minecraft:husk",
           "weight": 100,
-          "minCount": 10,
-          "maxCount": 32
+          "count": {
+            "type": "minecraft:uniform",
+            "min_inclusive": 10,
+            "max_inclusive": 32
+          }
         }
       ]
     },
@@ -35,14 +38,12 @@
         {
           "type": "minecraft:cat",
           "weight": 100,
-          "minCount": 4,
-          "maxCount": 4
+          "count": 4
         },
         {
           "type": "minecraft:rabbit",
           "weight": 100,
-          "minCount": 4,
-          "maxCount": 4
+          "count": 4
         }
       ]
     }
