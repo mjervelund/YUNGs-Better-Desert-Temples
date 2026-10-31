@@ -2,7 +2,6 @@ package com.yungnickyoung.minecraft.betterdeserttemples.mixin;
 
 import com.yungnickyoung.minecraft.betterdeserttemples.BetterDesertTemplesCommon;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.SectionPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -33,8 +32,8 @@ public abstract class DisableVanillaPyramidsMixin {
             long seed,
             ChunkAccess chunkAccess,
             ChunkPos chunkPos,
-            SectionPos sectionPos,
             ResourceKey<Level> levelResourceKey,
+            net.minecraft.world.level.biome.Climate.Sampler climateSampler,
             CallbackInfoReturnable<Boolean> cir
     ) {
         if (BetterDesertTemplesCommon.CONFIG.general.disableVanillaPyramids && structureSetEntry.structure().value().type() == StructureType.DESERT_PYRAMID) {
