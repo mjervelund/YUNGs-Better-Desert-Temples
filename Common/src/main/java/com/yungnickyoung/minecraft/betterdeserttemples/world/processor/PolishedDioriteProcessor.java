@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 
 
-public class PolishedDioriteProcessor extends StructureProcessor {
+public class PolishedDioriteProcessor implements StructureProcessor {
     public static final PolishedDioriteProcessor INSTANCE = new PolishedDioriteProcessor();
     public static final MapCodec<PolishedDioriteProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -31,7 +31,7 @@ public class PolishedDioriteProcessor extends StructureProcessor {
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
         if (blockInfoGlobal.state().getBlock() == Blocks.POLISHED_DIORITE) {
@@ -41,7 +41,8 @@ public class PolishedDioriteProcessor extends StructureProcessor {
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.POLISHED_DIORITE_PROCESSOR;
     }
 }

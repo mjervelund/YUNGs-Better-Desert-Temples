@@ -18,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 
 
-public class BlueConcreteProcessor extends StructureProcessor {
+public class BlueConcreteProcessor implements StructureProcessor {
     public static final BlueConcreteProcessor INSTANCE = new BlueConcreteProcessor();
     public static final MapCodec<BlueConcreteProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -26,16 +26,17 @@ public class BlueConcreteProcessor extends StructureProcessor {
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
-        if (blockInfoGlobal.state().getBlock() == Blocks.BLUE_CONCRETE) {
-            blockInfoGlobal = new StructureTemplate.StructureBlockInfo(blockInfoGlobal.pos(), Blocks.BLUE_TERRACOTTA.defaultBlockState(), blockInfoGlobal.nbt());
+        if (blockInfoGlobal.state().getBlock() == Blocks.CONCRETE.blue()) {
+            blockInfoGlobal = new StructureTemplate.StructureBlockInfo(blockInfoGlobal.pos(), Blocks.DYED_TERRACOTTA.blue().defaultBlockState(), blockInfoGlobal.nbt());
         }
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.BLUE_CONCRETE_PROCESSOR;
     }
 }

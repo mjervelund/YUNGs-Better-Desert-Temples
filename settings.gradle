@@ -21,4 +21,6 @@ plugins {
 }
 
 rootProject.name = 'betterdeserttemples'
-include("Common", "Fabric", "NeoForge")
+include("Common", "NeoForge")
+// Fabric is not ported to 26.3 (our server runs NeoForge only); pass -Pwith_fabric to include it.
+if (providers.gradleProperty("with_fabric").isPresent()) include("Fabric")

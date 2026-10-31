@@ -18,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 
 
-public class TorchProcessor extends StructureProcessor {
+public class TorchProcessor implements StructureProcessor {
     public static final TorchProcessor INSTANCE = new TorchProcessor();
     public static final MapCodec<TorchProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -26,7 +26,7 @@ public class TorchProcessor extends StructureProcessor {
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
         if (blockInfoGlobal.state().getBlock() == Blocks.TORCH || blockInfoGlobal.state().getBlock() == Blocks.WALL_TORCH) {
@@ -37,7 +37,8 @@ public class TorchProcessor extends StructureProcessor {
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.TORCH_PROCESSOR;
     }
 }

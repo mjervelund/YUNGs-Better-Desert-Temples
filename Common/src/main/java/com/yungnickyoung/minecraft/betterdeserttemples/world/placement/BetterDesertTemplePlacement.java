@@ -1,5 +1,6 @@
 package com.yungnickyoung.minecraft.betterdeserttemples.world.placement;
 
+import net.minecraft.world.level.levelgen.structure.placement.AbstractSpreadingStructurePlacement;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -15,7 +16,6 @@ import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadStructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.RandomSpreadType;
-import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
 
 import java.util.Optional;
 
@@ -57,8 +57,8 @@ public class BetterDesertTemplePlacement extends RandomSpreadStructurePlacement 
                     structurePos.getX(), structurePos.getY(), structurePos.getZ(),
                     48, 2,
                     biomeHolder -> biomeHolder.is(BiomeTags.IS_RIVER) || biomeHolder.is(BiomeTags.IS_OCEAN),
-                    randomState.oreRandom().at(structurePos), true,
-                    randomState.sampler()
+                    randomState.getOrCreateRandomFactory(net.minecraft.resources.Identifier.fromNamespaceAndPath("betterjungletemples", "biome_search")).at(structurePos), true,
+                    randomState
             ) != null;
             return !isOceanOrRiverNear;
         }
@@ -66,7 +66,9 @@ public class BetterDesertTemplePlacement extends RandomSpreadStructurePlacement 
     }
 
     @Override
-    public StructurePlacementType<?> type() {
-        return StructurePlacementTypeModule.BETTER_DESERT_TEMPLE_PLACEMENT;
+    @SuppressWarnings("unchecked")
+    public MapCodec<RandomSpreadStructurePlacement> codec() {
+        // Parent's codec() is typed to RandomSpreadStructurePlacement; ours encodes/decodes this subtype.
+        return (MapCodec<RandomSpreadStructurePlacement>) (MapCodec<?>) CODEC;
     }
 }

@@ -1,5 +1,6 @@
 package com.yungnickyoung.minecraft.betterdeserttemples.world.processor;
 
+import net.minecraft.world.entity.EntityTypes;
 import com.mojang.serialization.MapCodec;
 import com.yungnickyoung.minecraft.betterdeserttemples.module.StructureProcessorModule;
 import com.yungnickyoung.minecraft.yungsapi.world.spawner.MobSpawnerData;
@@ -23,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 
 
-public class BoneBlockProcessor extends StructureProcessor {
+public class BoneBlockProcessor implements StructureProcessor {
     public static final BoneBlockProcessor INSTANCE = new BoneBlockProcessor();
     public static final MapCodec<BoneBlockProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -31,12 +32,12 @@ public class BoneBlockProcessor extends StructureProcessor {
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
         if (blockInfoGlobal.state().getBlock() == Blocks.BONE_BLOCK) {
             MobSpawnerData spawnerData = MobSpawnerData.builder()
-                    .setEntityType(EntityType.SKELETON)
+                    .setEntityType(EntityTypes.SKELETON)
                     .requiredPlayerRange(32)
                     .build();
             spawnerData.nextSpawnData.getEntityToSpawn().put("HandItems", Util.make(new ListTag(), (handItemsTag) -> {
@@ -47,7 +48,8 @@ public class BoneBlockProcessor extends StructureProcessor {
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.BONE_BLOCK_PROCESSOR;
     }
 }

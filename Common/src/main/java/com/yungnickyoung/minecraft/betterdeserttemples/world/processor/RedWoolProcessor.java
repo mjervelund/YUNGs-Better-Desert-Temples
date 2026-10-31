@@ -18,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 
 
-public class RedWoolProcessor extends StructureProcessor {
+public class RedWoolProcessor implements StructureProcessor {
     public static final RedWoolProcessor INSTANCE = new RedWoolProcessor();
     public static final MapCodec<RedWoolProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -26,16 +26,17 @@ public class RedWoolProcessor extends StructureProcessor {
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
-        if (blockInfoGlobal.state().getBlock() == Blocks.RED_WOOL) {
+        if (blockInfoGlobal.state().getBlock() == Blocks.WOOL.red()) {
             blockInfoGlobal = new StructureTemplate.StructureBlockInfo(blockInfoGlobal.pos(), Blocks.TNT.defaultBlockState(), blockInfoGlobal.nbt());
         }
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.RED_WOOL_PROCESSOR;
     }
 }

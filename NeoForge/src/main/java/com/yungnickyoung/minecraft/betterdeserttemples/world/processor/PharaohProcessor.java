@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Attaches the spawn position of a pharaoh to its NBT data.
  */
-public class PharaohProcessor extends StructureProcessor {
+public class PharaohProcessor implements StructureProcessor {
     public static final PharaohProcessor INSTANCE = new PharaohProcessor();
     public static final MapCodec<StructureProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -36,13 +36,14 @@ public class PharaohProcessor extends StructureProcessor {
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.PHARAOH_PROCESSOR;
     }
 }

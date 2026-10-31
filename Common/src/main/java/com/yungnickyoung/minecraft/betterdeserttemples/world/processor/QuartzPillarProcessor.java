@@ -21,7 +21,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 
 
-public class QuartzPillarProcessor extends StructureProcessor implements ISafeWorldModifier {
+public class QuartzPillarProcessor implements StructureProcessor, ISafeWorldModifier {
     public static final QuartzPillarProcessor INSTANCE = new QuartzPillarProcessor();
     public static final MapCodec<QuartzPillarProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -29,7 +29,7 @@ public class QuartzPillarProcessor extends StructureProcessor implements ISafeWo
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
         if (blockInfoGlobal.state().getBlock() == Blocks.QUARTZ_PILLAR) {
@@ -44,7 +44,8 @@ public class QuartzPillarProcessor extends StructureProcessor implements ISafeWo
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.QUARTZ_PILLAR_PROCESSOR;
     }
 }

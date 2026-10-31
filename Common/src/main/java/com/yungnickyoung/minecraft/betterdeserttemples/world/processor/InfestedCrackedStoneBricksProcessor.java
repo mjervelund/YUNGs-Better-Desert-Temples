@@ -1,5 +1,6 @@
 package com.yungnickyoung.minecraft.betterdeserttemples.world.processor;
 
+import net.minecraft.world.entity.EntityTypes;
 import com.mojang.serialization.MapCodec;
 import com.yungnickyoung.minecraft.betterdeserttemples.module.StructureProcessorModule;
 import com.yungnickyoung.minecraft.yungsapi.world.spawner.MobSpawnerData;
@@ -21,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 
 
-public class InfestedCrackedStoneBricksProcessor extends StructureProcessor {
+public class InfestedCrackedStoneBricksProcessor implements StructureProcessor {
     public static final InfestedCrackedStoneBricksProcessor INSTANCE = new InfestedCrackedStoneBricksProcessor();
     public static final MapCodec<InfestedCrackedStoneBricksProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -29,12 +30,12 @@ public class InfestedCrackedStoneBricksProcessor extends StructureProcessor {
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
         if (blockInfoGlobal.state().getBlock() == Blocks.INFESTED_CRACKED_STONE_BRICKS) {
             MobSpawnerData spawnerData = MobSpawnerData.builder()
-                    .setEntityType(EntityType.SILVERFISH)
+                    .setEntityType(EntityTypes.SILVERFISH)
                     .requiredPlayerRange(24)
                     .build();
             CompoundTag nbt = spawnerData.save();
@@ -43,7 +44,8 @@ public class InfestedCrackedStoneBricksProcessor extends StructureProcessor {
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.INFESTED_CRACKED_STONE_BRICKS_PROCESSOR;
     }
 }

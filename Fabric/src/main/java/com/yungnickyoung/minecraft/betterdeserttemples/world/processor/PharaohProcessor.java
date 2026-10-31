@@ -44,7 +44,8 @@ public class PharaohProcessor extends StructureEntityProcessor {
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.PHARAOH_PROCESSOR;
     }
 }

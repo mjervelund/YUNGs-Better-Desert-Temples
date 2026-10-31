@@ -6,7 +6,10 @@ plugins {
 def useLocalYungsApi = findProject(':yungsapi') != null
 
 neoForge {
-    neoFormVersion = mc_version_neo_form
+    enable {
+        neoFormVersion = mc_version_neo_form
+        disableRecompilation = true // NeoForm recompile breaks on JDK 25 (HolderSet.Named#contents)
+    }
     // Automatically enable AccessTransformers if the file exists
     def at = file('src/main/resources/META-INF/accesstransformer.cfg')
     if (at.exists()) {

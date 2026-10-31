@@ -20,7 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 
 
-public class EndStoneBrickWallProcessor extends StructureProcessor {
+public class EndStoneBrickWallProcessor implements StructureProcessor {
     public static final EndStoneBrickWallProcessor INSTANCE = new EndStoneBrickWallProcessor();
     public static final MapCodec<EndStoneBrickWallProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -28,7 +28,7 @@ public class EndStoneBrickWallProcessor extends StructureProcessor {
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
         if (blockInfoGlobal.state().getBlock() == Blocks.END_STONE_BRICK_WALL) {
@@ -44,7 +44,8 @@ public class EndStoneBrickWallProcessor extends StructureProcessor {
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.END_STONE_BRICK_WALL_PROCESSOR;
     }
 }

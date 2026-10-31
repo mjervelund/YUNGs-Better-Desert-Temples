@@ -29,7 +29,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 
 
-public class AcaciaWoodProcessor extends StructureProcessor {
+public class AcaciaWoodProcessor implements StructureProcessor {
     public static final AcaciaWoodProcessor INSTANCE = new AcaciaWoodProcessor();
     public static final MapCodec<AcaciaWoodProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -60,7 +60,7 @@ public class AcaciaWoodProcessor extends StructureProcessor {
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
         if (blockInfoGlobal.state().getBlock() == Blocks.ACACIA_WOOD) {
@@ -76,7 +76,8 @@ public class AcaciaWoodProcessor extends StructureProcessor {
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.ACACIA_WOOD_PROCESSOR;
     }
 }

@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 
 
-public class PurpurPillarProcessor extends StructureProcessor implements ISafeWorldModifier {
+public class PurpurPillarProcessor implements StructureProcessor, ISafeWorldModifier {
     public static final PurpurPillarProcessor INSTANCE = new PurpurPillarProcessor();
     public static final MapCodec<PurpurPillarProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -31,7 +31,7 @@ public class PurpurPillarProcessor extends StructureProcessor implements ISafeWo
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
         if (blockInfoGlobal.state().getBlock() == Blocks.PURPUR_PILLAR) {
@@ -52,7 +52,8 @@ public class PurpurPillarProcessor extends StructureProcessor implements ISafeWo
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.PURPUR_PILLAR_PROCESSOR;
     }
 }

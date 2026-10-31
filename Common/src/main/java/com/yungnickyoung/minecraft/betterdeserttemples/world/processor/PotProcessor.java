@@ -22,7 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 
 
-public class PotProcessor extends StructureProcessor {
+public class PotProcessor implements StructureProcessor {
     public static final PotProcessor INSTANCE = new PotProcessor();
     public static final MapCodec<PotProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -30,7 +30,7 @@ public class PotProcessor extends StructureProcessor {
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
         if (blockInfoGlobal.state().getBlock() == Blocks.DECORATED_POT) {
@@ -47,7 +47,8 @@ public class PotProcessor extends StructureProcessor {
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.POT_PROCESSOR;
     }
 

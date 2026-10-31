@@ -1,5 +1,6 @@
 package com.yungnickyoung.minecraft.betterdeserttemples.world.processor;
 
+import net.minecraft.world.entity.EntityTypes;
 import com.mojang.serialization.MapCodec;
 import com.yungnickyoung.minecraft.betterdeserttemples.module.StructureProcessorModule;
 import com.yungnickyoung.minecraft.yungsapi.world.spawner.MobSpawnerData;
@@ -23,7 +24,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 
 
-public class YellowWoolProcessor extends StructureProcessor {
+public class YellowWoolProcessor implements StructureProcessor {
     public static final YellowWoolProcessor INSTANCE = new YellowWoolProcessor();
     public static final MapCodec<YellowWoolProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -31,12 +32,12 @@ public class YellowWoolProcessor extends StructureProcessor {
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
-        if (blockInfoGlobal.state().getBlock() == Blocks.YELLOW_WOOL) {
+        if (blockInfoGlobal.state().getBlock() == Blocks.WOOL.yellow()) {
             MobSpawnerData spawnerData = MobSpawnerData.builder()
-                    .setEntityType(EntityType.HUSK)
+                    .setEntityType(EntityTypes.HUSK)
                     .maxNearbyEntities(8)
                     .requiredPlayerRange(24)
                     .build();
@@ -108,7 +109,8 @@ public class YellowWoolProcessor extends StructureProcessor {
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.YELLOW_WOOL_PROCESSOR;
     }
 }

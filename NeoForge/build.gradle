@@ -14,7 +14,10 @@ dependencies {
 }
 
 neoForge {
-    version = neoforge_version
+    enable {
+        version = neoforge_version
+        disableRecompilation = true // NeoForm recompile breaks on JDK 25 (HolderSet.Named#contents)
+    }
     // Automatically enable neoforge AccessTransformers if the file exists
     def at = project(':Common').file('src/main/resources/META-INF/accesstransformer.cfg')
     if (at.exists()) {

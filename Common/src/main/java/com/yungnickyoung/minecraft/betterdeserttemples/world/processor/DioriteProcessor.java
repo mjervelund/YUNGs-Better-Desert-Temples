@@ -23,7 +23,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 
 
-public class DioriteProcessor extends StructureProcessor {
+public class DioriteProcessor implements StructureProcessor {
     public static final DioriteProcessor INSTANCE = new DioriteProcessor();
     public static final MapCodec<DioriteProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -36,7 +36,7 @@ public class DioriteProcessor extends StructureProcessor {
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
         if (blockInfoGlobal.state().getBlock() == Blocks.DIORITE) {
@@ -52,7 +52,8 @@ public class DioriteProcessor extends StructureProcessor {
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.DIORITE_PROCESSOR;
     }
 }

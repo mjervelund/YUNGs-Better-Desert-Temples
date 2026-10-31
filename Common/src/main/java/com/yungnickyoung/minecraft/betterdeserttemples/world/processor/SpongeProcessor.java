@@ -23,18 +23,18 @@ import java.util.List;
  */
 
 
-public class SpongeProcessor extends StructureProcessor {
+public class SpongeProcessor implements StructureProcessor {
     public static final SpongeProcessor INSTANCE = new SpongeProcessor();
     public static final MapCodec<SpongeProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
-    private static final List<Block> CANDLES = List.of(Blocks.CANDLE, Blocks.WHITE_CANDLE, Blocks.GRAY_CANDLE,
-            Blocks.LIGHT_GRAY_CANDLE, Blocks.BROWN_CANDLE, Blocks.ORANGE_CANDLE);
+    private static final List<Block> CANDLES = List.of(Blocks.CANDLE, Blocks.DYED_CANDLE.white(), Blocks.DYED_CANDLE.gray(),
+            Blocks.DYED_CANDLE.lightGray(), Blocks.DYED_CANDLE.brown(), Blocks.DYED_CANDLE.orange());
 
     @Override
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
         Block block = blockInfoGlobal.state().getBlock();
@@ -68,7 +68,8 @@ public class SpongeProcessor extends StructureProcessor {
         return CANDLES.get(i);
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.SPONGE_PROCESSOR;
     }
 }

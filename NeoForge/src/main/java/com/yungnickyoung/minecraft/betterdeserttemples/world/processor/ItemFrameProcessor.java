@@ -22,7 +22,7 @@ import org.jspecify.annotations.Nullable;
  * The type of random item depends on the item already in the frame.
  */
 
-public class ItemFrameProcessor extends StructureProcessor {
+public class ItemFrameProcessor implements StructureProcessor {
     public static final ItemFrameProcessor INSTANCE = new ItemFrameProcessor();
     public static final MapCodec<StructureProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -81,13 +81,14 @@ public class ItemFrameProcessor extends StructureProcessor {
     public StructureTemplate.@Nullable StructureBlockInfo processBlock(LevelReader levelReader,
                                                                        BlockPos jigsawPiecePos,
                                                                        BlockPos jigsawPieceBottomCenterPos,
-                                                                       StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                                       BlockPos blockPosLocal,
                                                                        StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                                        StructurePlaceSettings structurePlacementData) {
         return blockInfoGlobal;
     }
 
-    @Override protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.ITEM_FRAME_PROCESSOR;
     }
 }

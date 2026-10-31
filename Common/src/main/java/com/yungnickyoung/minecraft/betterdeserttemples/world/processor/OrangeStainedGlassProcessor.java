@@ -20,7 +20,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 /**
  * Replaces orange stained-glass with sand and, rarely, suspicious sand.
  */
-public class OrangeStainedGlassProcessor extends StructureProcessor {
+public class OrangeStainedGlassProcessor implements StructureProcessor {
     public static final OrangeStainedGlassProcessor INSTANCE = new OrangeStainedGlassProcessor();
     public static final MapCodec<OrangeStainedGlassProcessor> CODEC = MapCodec.unit(() -> INSTANCE);
 
@@ -28,10 +28,10 @@ public class OrangeStainedGlassProcessor extends StructureProcessor {
     public StructureTemplate.StructureBlockInfo processBlock(LevelReader levelReader,
                                                              BlockPos jigsawPiecePos,
                                                              BlockPos jigsawPieceBottomCenterPos,
-                                                             StructureTemplate.StructureBlockInfo blockInfoLocal,
+                                                             BlockPos blockPosLocal,
                                                              StructureTemplate.StructureBlockInfo blockInfoGlobal,
                                                              StructurePlaceSettings structurePlacementData) {
-        if (blockInfoGlobal.state().getBlock() == Blocks.ORANGE_STAINED_GLASS) {
+        if (blockInfoGlobal.state().getBlock() == Blocks.STAINED_GLASS.orange()) {
             RandomSource randomSource = structurePlacementData.getRandom(blockInfoGlobal.pos());
             float f = randomSource.nextFloat();
             if (f < 0.01f) {
@@ -56,7 +56,8 @@ public class OrangeStainedGlassProcessor extends StructureProcessor {
         return blockInfoGlobal;
     }
 
-    protected StructureProcessorType<?> getType() {
+    @Override
+    public MapCodec<? extends StructureProcessor> codec() {
         return StructureProcessorModule.ORANGE_STAINED_GLASS_PROCESSOR;
     }
 }
