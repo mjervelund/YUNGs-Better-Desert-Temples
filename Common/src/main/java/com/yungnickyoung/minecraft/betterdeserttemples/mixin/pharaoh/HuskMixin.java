@@ -22,4 +22,19 @@ public class HuskMixin implements IPharaohData {
     public Vec3 getOriginalSpawnPos() {
         return this.bdtOriginalSpawnPos;
     }
+
+    @Unique
+    private boolean bdtIsPharaoh;
+
+    @Unique
+    @Override
+    public void setMarkedPharaoh(boolean isPharaoh) {
+        this.bdtIsPharaoh = isPharaoh;
+    }
+
+    @Unique
+    @Override
+    public boolean isMarkedPharaoh() {
+        return this.bdtIsPharaoh;
+    }
 }

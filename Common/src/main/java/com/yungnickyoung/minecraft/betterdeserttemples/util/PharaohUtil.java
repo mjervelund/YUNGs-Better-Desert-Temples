@@ -37,10 +37,21 @@ public class PharaohUtil {
             return false;
         }
 
-        return Arrays.stream(EquipmentSlot.values())
+        // Once identified, a pharaoh stays one: it can lose its head (e.g. it picks up a helmet that replaces it),
+        // and then killing it must still clear the temple (issue #45).
+        IPharaohData pharaohData = husk instanceof IPharaohData data ? data : null;
+        if (pharaohData != null && pharaohData.isMarkedPharaoh()) {
+            return true;
+        }
+
+        boolean wearsPharaohHead = Arrays.stream(EquipmentSlot.values())
                 .map(husk::getItemBySlot)
                 .filter(is -> is.is(Items.PLAYER_HEAD))
                 .anyMatch(PharaohUtil::isPharoahHead);
+        if (wearsPharaohHead && pharaohData != null) {
+            pharaohData.setMarkedPharaoh(true);
+        }
+        return wearsPharaohHead;
     }
 
     public static boolean isPharaoh(CompoundTag mobNbt, RegistryAccess registryAccess) {
