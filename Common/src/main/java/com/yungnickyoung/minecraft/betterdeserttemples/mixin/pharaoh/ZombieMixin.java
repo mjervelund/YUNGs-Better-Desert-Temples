@@ -20,6 +20,9 @@ import java.util.Optional;
 public class ZombieMixin {
     @Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
     private void betterdeserttemples_readPharaohOriginalSpawnPosFromNbt(final ValueInput input, final CallbackInfo ci) {
+        if (this instanceof IPharaohData pharaohData && input.getBooleanOr("bdtPharaoh", false)) {
+            pharaohData.setMarkedPharaoh(true);
+        }
         if (PharaohUtil.isPharaoh(this)) {
             input.read("bdtOriginalSpawnPos", Vec3.CODEC).ifPresent(originalSpawnPos -> {
                 ((IPharaohData) this).setOriginalSpawnPos(originalSpawnPos);
@@ -31,6 +34,7 @@ public class ZombieMixin {
     @Inject(method = "addAdditionalSaveData", at = @At("HEAD"))
     private void betterdeserttemples_writePharaohOriginalSpawnPosToNbt(final ValueOutput output, final CallbackInfo ci) {
         if (PharaohUtil.isPharaoh(this)) {
+            output.putBoolean("bdtPharaoh", true);
             Vec3 originalSpawnPos = ((IPharaohData) this).getOriginalSpawnPos();
             output.store("bdtOriginalSpawnPos", Vec3.CODEC, originalSpawnPos);
         }
