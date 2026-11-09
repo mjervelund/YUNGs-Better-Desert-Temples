@@ -7,6 +7,7 @@ import net.minecraft.nbt.NbtIo;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -85,10 +86,25 @@ public class TempleStateRegion {
     private CompoundTag readRegionFile() {
         try {
             return NbtIo.read(regionFile.toPath());
-        } catch (IOException e) {
+        } catch (IOException | RuntimeException e) { // a corrupt tag inside the file throws ReportedNbtException
             BetterDesertTemplesCommon.LOGGER.error("Encountered error reading data from temple region file {}", regionKey);
             BetterDesertTemplesCommon.LOGGER.error(e);
+            // The caller writes the returned tag back to this file. Move the unreadable file aside first,
+            // so the cleared state of the other temples in this region is not overwritten and can be restored.
+            backUpUnreadableRegionFile();
             return new CompoundTag();
+        }
+    }
+
+    private void backUpUnreadableRegionFile() {
+        Path regionPath = regionFile.toPath();
+        Path backupPath = regionPath.resolveSibling(regionKey + ".corrupt-" + System.currentTimeMillis());
+        try {
+            Files.move(regionPath, backupPath);
+            BetterDesertTemplesCommon.LOGGER.error("Moved unreadable temple region file {} to {}. Temples in this region count as not cleared until it is repaired.", regionKey, backupPath.getFileName());
+        } catch (IOException e) {
+            BetterDesertTemplesCommon.LOGGER.error("Unable to back up unreadable temple region file {}", regionKey);
+            BetterDesertTemplesCommon.LOGGER.error(e);
         }
     }
 
