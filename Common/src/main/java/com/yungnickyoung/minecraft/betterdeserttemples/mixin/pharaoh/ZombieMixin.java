@@ -36,7 +36,9 @@ public class ZombieMixin {
         if (PharaohUtil.isPharaoh(this)) {
             output.putBoolean("bdtPharaoh", true);
             Vec3 originalSpawnPos = ((IPharaohData) this).getOriginalSpawnPos();
-            output.store("bdtOriginalSpawnPos", Vec3.CODEC, originalSpawnPos);
+            // A pharaoh not placed through PharaohProcessor (e.g. /place template, a summoned husk with the head)
+            // has no spawn position; storing null threw and failed the entity's save.
+            output.storeNullable("bdtOriginalSpawnPos", Vec3.CODEC, originalSpawnPos);
         }
     }
 }
