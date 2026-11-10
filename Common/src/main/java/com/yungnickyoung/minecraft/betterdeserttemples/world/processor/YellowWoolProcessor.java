@@ -5,10 +5,22 @@ import com.mojang.serialization.MapCodec;
 import com.yungnickyoung.minecraft.betterdeserttemples.module.StructureProcessorModule;
 import com.yungnickyoung.minecraft.yungsapi.world.spawner.MobSpawnerData;
 
-import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.RegistryOps;
+import net.minecraft.world.entity.EntityEquipment;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.level.block.entity.BannerPattern;
+import net.minecraft.world.level.block.entity.BannerPatternLayers;
+import net.minecraft.world.level.block.entity.BannerPatterns;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
@@ -41,68 +53,31 @@ public class YellowWoolProcessor implements StructureProcessor {
                     .maxNearbyEntities(8)
                     .requiredPlayerRange(24)
                     .build();
-            spawnerData.nextSpawnData.getEntityToSpawn().put("HandItems", Util.make(new ListTag(), (handItemsTag) -> {
-                handItemsTag.add(Util.make(new CompoundTag(), (handItem1Tag) -> {
-                    handItem1Tag.putString("id", "minecraft:golden_sword");
-                    handItem1Tag.putByte("Count", (byte) 1);
-                }));
-                handItemsTag.add(Util.make(new CompoundTag(), (handItem2Tag) -> {
-                    handItem2Tag.putString("id", "minecraft:shield");
-                    handItem2Tag.putByte("Count", (byte) 1);
-                    handItem2Tag.put("tag", Util.make(new CompoundTag(), (tagNbt) -> {
-                        tagNbt.put("BlockEntityTag", Util.make(new CompoundTag(), (blockEntityTag) -> {
-                            blockEntityTag.putInt("Base", 11);
-                            blockEntityTag.put("Patterns", Util.make(new ListTag(), (patternsTag) -> {
-                                patternsTag.add(Util.make(new CompoundTag(), (patternTag) -> {
-                                    patternTag.putInt("Color", 4);
-                                    patternTag.putString("Pattern", "ss");
-                                }));
-                                patternsTag.add(Util.make(new CompoundTag(), (patternTag) -> {
-                                    patternTag.putInt("Color", 4);
-                                    patternTag.putString("Pattern", "ms");
-                                }));
-                                patternsTag.add(Util.make(new CompoundTag(), (patternTag) -> {
-                                    patternTag.putInt("Color", 4);
-                                    patternTag.putString("Pattern", "mc");
-                                }));
-                                patternsTag.add(Util.make(new CompoundTag(), (patternTag) -> {
-                                    patternTag.putInt("Color", 15);
-                                    patternTag.putString("Pattern", "hhb");
-                                }));
-                            }));
-                        }));
-                    }));
-                }));
-                handItemsTag.add(new CompoundTag());
-            }));
-            spawnerData.nextSpawnData.getEntityToSpawn().put("ArmorItems", Util.make(new ListTag(), (armorItemsTag) -> {
-                armorItemsTag.add(Util.make(new CompoundTag(), (armorItem1Tag) -> {
-                    armorItem1Tag.putString("id", "minecraft:leather_boots");
-                    armorItem1Tag.putByte("Count", (byte) 1);
-                    armorItem1Tag.put("tag", Util.make(new CompoundTag(), (tagNbt) -> {
-                        tagNbt.put("display", Util.make(new CompoundTag(), (displayTag) -> {
-                            displayTag.putInt("color", 0);
-                        }));
-                    }));
-                }));
-                armorItemsTag.add(Util.make(new CompoundTag(), (armorItem2Tag) -> {
-                    armorItem2Tag.putString("id", "minecraft:leather_leggings");
-                    armorItem2Tag.putByte("Count", (byte) 1);
-                    armorItem2Tag.put("tag", Util.make(new CompoundTag(), (tagNbt) -> {
-                        tagNbt.put("display", Util.make(new CompoundTag(), (displayTag) -> {
-                            displayTag.putInt("color", 1114367);
-                        }));
-                    }));
-                }));
-                armorItemsTag.add(Util.make(new CompoundTag(), (armorItem3Tag) -> {
-                    armorItem3Tag.putString("id", "minecraft:golden_chestplate");
-                    armorItem3Tag.putByte("Count", (byte) 1);
-                }));
-                armorItemsTag.add(Util.make(new CompoundTag(), (armorItem4Tag) -> {
-                    armorItem4Tag.putString("id", "minecraft:chainmail_helmet");
-                    armorItem4Tag.putByte("Count", (byte) 1);
-                }));
-            }));
+            // SpawnData is not run through the data fixer, so the gear must be written in the current format:
+            // the `equipment` map of item stacks. The pre-1.20.5 HandItems/ArmorItems lists are ignored by the game.
+            HolderGetter<BannerPattern> bannerPatterns = levelReader.registryAccess().lookupOrThrow(Registries.BANNER_PATTERN);
+            ItemStack shield = new ItemStack(Items.SHIELD);
+            shield.set(DataComponents.BASE_COLOR, DyeColor.BLUE);
+            shield.set(DataComponents.BANNER_PATTERNS, new BannerPatternLayers.Builder()
+                    .addIfRegistered(bannerPatterns, BannerPatterns.STRIPE_SMALL, DyeColor.YELLOW)
+                    .addIfRegistered(bannerPatterns, BannerPatterns.STRIPE_MIDDLE, DyeColor.YELLOW)
+                    .addIfRegistered(bannerPatterns, BannerPatterns.CIRCLE_MIDDLE, DyeColor.YELLOW)
+                    .addIfRegistered(bannerPatterns, BannerPatterns.HALF_HORIZONTAL_MIRROR, DyeColor.BLACK)
+                    .build());
+            ItemStack boots = new ItemStack(Items.LEATHER_BOOTS);
+            boots.set(DataComponents.DYED_COLOR, new DyedItemColor(0));
+            ItemStack leggings = new ItemStack(Items.LEATHER_LEGGINGS);
+            leggings.set(DataComponents.DYED_COLOR, new DyedItemColor(1114367));
+
+            EntityEquipment equipment = new EntityEquipment();
+            equipment.set(EquipmentSlot.MAINHAND, new ItemStack(Items.GOLDEN_SWORD));
+            equipment.set(EquipmentSlot.OFFHAND, shield);
+            equipment.set(EquipmentSlot.FEET, boots);
+            equipment.set(EquipmentSlot.LEGS, leggings);
+            equipment.set(EquipmentSlot.CHEST, new ItemStack(Items.GOLDEN_CHESTPLATE));
+            equipment.set(EquipmentSlot.HEAD, new ItemStack(Items.CHAINMAIL_HELMET));
+            spawnerData.nextSpawnData.getEntityToSpawn().store("equipment", EntityEquipment.CODEC,
+                    RegistryOps.create(NbtOps.INSTANCE, levelReader.registryAccess()), equipment);
             CompoundTag nbt = spawnerData.save();
             blockInfoGlobal = new StructureTemplate.StructureBlockInfo(blockInfoGlobal.pos(), Blocks.SPAWNER.defaultBlockState(), nbt);
         }
