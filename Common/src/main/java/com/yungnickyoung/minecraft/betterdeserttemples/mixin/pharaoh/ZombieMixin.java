@@ -32,7 +32,9 @@ public class ZombieMixin {
     private void betterdeserttemples_writePharaohOriginalSpawnPosToNbt(final ValueOutput output, final CallbackInfo ci) {
         if (PharaohUtil.isPharaoh(this)) {
             Vec3 originalSpawnPos = ((IPharaohData) this).getOriginalSpawnPos();
-            output.store("bdtOriginalSpawnPos", Vec3.CODEC, originalSpawnPos);
+            // A pharaoh not placed through PharaohProcessor (e.g. /place template, a summoned husk with the head)
+            // has no spawn position; storing null threw and failed the entity's save.
+            output.storeNullable("bdtOriginalSpawnPos", Vec3.CODEC, originalSpawnPos);
         }
     }
 }
