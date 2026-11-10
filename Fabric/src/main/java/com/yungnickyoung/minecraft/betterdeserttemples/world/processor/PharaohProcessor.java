@@ -5,6 +5,7 @@ import com.yungnickyoung.minecraft.betterdeserttemples.module.StructureProcessor
 import com.yungnickyoung.minecraft.betterdeserttemples.util.PharaohUtil;
 import com.yungnickyoung.minecraft.yungsapi.world.processor.StructureEntityProcessor;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -28,7 +29,11 @@ public class PharaohProcessor extends StructureEntityProcessor {
                                                                StructureTemplate.StructureEntityInfo globalEntityInfo,
                                                                StructurePlaceSettings structurePlaceSettings) {
         if (PharaohUtil.isPharaoh(globalEntityInfo.nbt, serverLevelAccessor.registryAccess())) {
-            PharaohUtil.attachSpawnPos(globalEntityInfo.nbt, globalEntityInfo.pos);
+            // globalEntityInfo.nbt is the cached template's own tag (shared by every placement of the template, also
+            // from parallel worldgen threads); write the spawn position into a copy.
+            CompoundTag nbt = globalEntityInfo.nbt.copy();
+            PharaohUtil.attachSpawnPos(nbt, globalEntityInfo.pos);
+            return new StructureTemplate.StructureEntityInfo(globalEntityInfo.pos, globalEntityInfo.blockPos, nbt);
         }
         return globalEntityInfo;
     }
